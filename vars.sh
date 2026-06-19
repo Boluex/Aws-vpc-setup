@@ -1,0 +1,9 @@
+export VPC_ID=vpc-24239ccafe1c4f7f8
+export PUBLIC_SUBNET_ID=subnet-73921823511b4868a
+export PRIVATE_SUBNET_ID_1=subnet-d26d50797ec341f79
+export PRIVATE_SUBNET_ID_2=subnet-22ef73982b944f7e9
+export IGW_ID=igw-446790c9f85244898
+export EIP_ALLOC_ID=eipalloc-68a3b9a3c7cb41b7b
+export NAT_GW_ID=nat-b2e88d34ac7e43509
+export PUBLIC_RT_ID=rtb-3da25c057f3942589
+export PRIVATE_RT_ID=rtb-5f69eec17a8c4ab68
