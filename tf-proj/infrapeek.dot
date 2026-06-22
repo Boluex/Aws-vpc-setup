@@ -1,0 +1,33 @@
+digraph infrapeek {
+  rankdir=TB; compound=true; labelloc=t;
+  graph [fontname="Helvetica"]; node [fontname="Helvetica" fontsize=10]; edge [fontsize=9 color="#546E7A"];
+  Internet [label="Public Internet" shape=ellipse style=filled fillcolor="#ECEFF1"];
+  subgraph cluster_vpc {
+    label="VIRTUAL PRIVATE CLOUD (VPC)   10.0.0.0/16"; style=rounded; color="#37474F"; fontname="Helvetica-Bold";
+    subgraph cluster_vera_pub_subnet {
+      label="PUBLIC SUBNET (10.0.1.0/24)"; style="rounded,filled"; color="#90A4AE"; fillcolor="#E3F2FD"; fontname="Helvetica-Bold";
+      n_bastion_instance [label="Bastion Host\n(bastion_instance)" shape=box style="rounded,filled" fillcolor="#FFD54F"];
+      n_frontend_web_instance [label="Nginx Frontend\n(frontend_web_instance)" shape=box style="rounded,filled" fillcolor="#81C784"];
+      nat [label="NAT Gateway\n(vera_nat_gateway)" shape=box style="rounded,filled" fillcolor="#B0BEC5"];
+    }
+    subgraph cluster_vera_pvt_subnet_1 {
+      label="PRIVATE SUBNET 1 (10.0.2.0/24)"; style="rounded,filled"; color="#90A4AE"; fillcolor="#FFF3E0"; fontname="Helvetica-Bold";
+      n_backend_web_instance [label="Django Backend\n(backend_web_instance)" shape=box style="rounded,filled" fillcolor="#FFB74D"];
+    }
+    subgraph cluster_vera_pvt_subnet_2 {
+      label="PRIVATE SUBNET 2 (10.0.3.0/24)"; style="rounded,filled"; color="#90A4AE"; fillcolor="#FFF3E0"; fontname="Helvetica-Bold";
+      n_database_instance [label="Postgres Database\n(database_instance)" shape=box style="rounded,filled" fillcolor="#E57373"];
+    }
+  }
+  Internet -> n_bastion_instance [label="22/SSH"];
+  Internet -> n_frontend_web_instance [label="80/HTTP"];
+  Internet -> n_frontend_web_instance [label="443/HTTPS"];
+  n_bastion_instance -> n_frontend_web_instance [label="22/SSH"];
+  n_frontend_web_instance -> n_backend_web_instance [label="8000/app"];
+  n_bastion_instance -> n_backend_web_instance [label="22/SSH"];
+  n_backend_web_instance -> n_database_instance [label="5432/PostgreSQL"];
+  n_bastion_instance -> n_database_instance [label="22/SSH"];
+  n_backend_web_instance -> nat [label="egress" style=dashed color="#90A4AE"];
+  n_database_instance -> nat [label="egress" style=dashed color="#90A4AE"];
+  nat -> Internet [label="outbound" style=dashed color="#90A4AE"];
+}

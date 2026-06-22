@@ -1,0 +1,82 @@
+graph TD
+  r0["aws_vpc<br/>vera_vpc"]
+  r1["aws_internet_gateway<br/>vera_gw"]
+  r2["aws_nat_gateway<br/>vera_nat_gateway"]
+  r3["aws_subnet<br/>vera_pub_subnet"]
+  r4["aws_subnet<br/>vera_pvt_subnet_1"]
+  r5["aws_subnet<br/>vera_pvt_subnet_2"]
+  r6["aws_route_table<br/>vera_pub_route_table"]
+  r7["aws_route_table<br/>vera_pvt_route_table"]
+  r8["aws_route_table_association<br/>vera_pub_route_table"]
+  r9["aws_route_table_association<br/>vera_pvt_route_table"]
+  r10["aws_route_table_association<br/>vera_pvt_route_table_2"]
+  r11["aws_eip<br/>nat"]
+  r12["aws_security_group<br/>allow_ssh"]
+  r13["aws_security_group<br/>frontend_web_sg"]
+  r14["aws_security_group<br/>backend_web_sg"]
+  r15["aws_security_group<br/>database_sg"]
+  r16["aws_instance<br/>bastion_instance"]
+  r17["aws_instance<br/>frontend_web_instance"]
+  r18["aws_instance<br/>backend_web_instance"]
+  r19["aws_instance<br/>database_instance"]
+  r1 --> r0
+  r9 --> r4
+  r9 --> r7
+  r6 --> r1
+  r6 --> r0
+  r16 --> r3
+  r16 --> r12
+  r2 --> r11
+  r2 --> r3
+  r14 --> r0
+  r14 --> r13
+  r14 --> r12
+  r8 --> r6
+  r8 --> r3
+  r5 --> r0
+  r4 --> r0
+  r17 --> r13
+  r17 --> r3
+  r18 --> r14
+  r18 --> r4
+  r15 --> r14
+  r15 --> r0
+  r15 --> r12
+  r13 --> r0
+  r13 --> r12
+  r10 --> r5
+  r10 --> r7
+  r3 --> r0
+  r7 --> r2
+  r7 --> r0
+  r19 --> r5
+  r19 --> r15
+  r12 --> r0
+  classDef gateway fill:#4FC3F7,stroke:#0277BD,color:#000;
+  classDef compute fill:#FFB74D,stroke:#E65100,color:#000;
+  classDef queue fill:#BA68C8,stroke:#6A1B9A,color:#fff;
+  classDef storage fill:#AED581,stroke:#558B2F,color:#000;
+  classDef datastore fill:#E57373,stroke:#C62828,color:#000;
+  classDef network fill:#90A4AE,stroke:#37474F,color:#000;
+  classDef iam fill:#FFF176,stroke:#F9A825,color:#000;
+  classDef other fill:#CFD8DC,stroke:#546E7A,color:#000;
+  class r0 network;
+  class r1 network;
+  class r2 network;
+  class r3 network;
+  class r4 network;
+  class r5 network;
+  class r6 datastore;
+  class r7 datastore;
+  class r8 datastore;
+  class r9 datastore;
+  class r10 datastore;
+  class r11 other;
+  class r12 iam;
+  class r13 iam;
+  class r14 iam;
+  class r15 iam;
+  class r16 compute;
+  class r17 compute;
+  class r18 compute;
+  class r19 compute;
