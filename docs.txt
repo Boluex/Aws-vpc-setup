@@ -1,8 +1,0 @@
-cd ~/vera/emulators/aws-ec2/warmups
-uv run python warmup_ami.py
-
-aws ec2 describe-images \
-  --profile vera \
-  --endpoint-url http://localhost:5003 \
-  --query 'Images[?contains(Name, `ubuntu`)].{ID:ImageId,Name:Name}' \
-  --output table
