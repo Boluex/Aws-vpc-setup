@@ -10,3 +10,9 @@
 # Local envs / logs
 *.log
 crash.log
+
+# Ansible
+.vault_pass
+secrets.yml
+ansible-proj/collections/
+.ansible/

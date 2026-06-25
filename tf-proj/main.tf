@@ -1,8 +1,6 @@
 resource "aws_vpc" "vera_vpc" {
-  cidr_block           = var.vpc_cidr
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-
+  cidr_block = var.vpc_cidr
+ 
   tags = {
     Name = "${var.project_name}-vpc"
   }
@@ -20,6 +18,7 @@ resource "aws_internet_gateway" "vera_gw" {
 resource "aws_nat_gateway" "vera_nat_gateway" {
   subnet_id     = aws_subnet.vera_pub_subnet.id
   allocation_id = aws_eip.nat.id
+  depends_on    = [aws_internet_gateway.vera_gw]
   tags = {
     Name = "${var.project_name}-nat-gw"
   }
@@ -41,7 +40,7 @@ resource "aws_subnet" "vera_pvt_subnet_1" {
   vpc_id                  = aws_vpc.vera_vpc.id
   cidr_block              = var.private_subnet_1_cidrs
   availability_zone       = var.availability_zone
-  map_public_ip_on_launch = false
+  
 
   tags = {
     Name = "${var.project_name}-pvt-subnet-1"
@@ -52,7 +51,7 @@ resource "aws_subnet" "vera_pvt_subnet_2" {
   vpc_id                  = aws_vpc.vera_vpc.id
   cidr_block              = var.private_subnet_2_cidrs
   availability_zone       = var.availability_zone
-  map_public_ip_on_launch = false
+  
 
   tags = {
     Name = "${var.project_name}-pvt-subnet-2"
@@ -76,8 +75,8 @@ resource "aws_route_table" "vera_pvt_route_table" {
   vpc_id = aws_vpc.vera_vpc.id
 
   route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.vera_nat_gateway.id
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.vera_nat_gateway.id
   }
 
   tags = {

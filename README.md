@@ -156,3 +156,21 @@ This directory provisions the identical 3-tier infrastructure using a declarativ
    ```bash
    terraform destroy
    ```
+
+
+
+
+
+
+
+Outputs:
+
+backend_instance_id = "i-feac7f1c9b1b461bb"
+backend_private_ip = ""
+bastion_instance_id = "i-a8f5458e4a0a4c908"
+bastion_public_ip = ""
+database_instance_id = "i-446447c27b7c4753b"
+database_private_ip = ""
+frontend_instance_id = "i-fda8550566e44127b"
+frontend_public_ip = ""
+vpc_id = "vpc-7e276fcce2264d9a8"
