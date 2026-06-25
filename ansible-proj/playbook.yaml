@@ -1,0 +1,199 @@
+- name: Installalling and setting Ngin across the frontend application
+  hosts: frontend
+  become: true
+  vars_files:
+    - secrets.yml
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600  
+
+    - name: install nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+
+    - name: Start nginx
+      ansible.builtin.systemd:
+        name: nginx
+        state: started
+        enabled: yes
+
+
+
+- name: Installing and setting up postgresql across the database
+  hosts: database
+  become: true
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: install postgresql
+      ansible.builtin.apt:
+        name: postgresql
+        state: present
+        update_cache: yes
+
+    - name: install postgresql-contrib
+      ansible.builtin.apt:
+        name: postgresql-contrib
+        state: present
+        update_cache: yes
+
+    - name: install python3-psycopg2
+      ansible.builtin.apt:
+        name: python3-psycopg2
+        state: present
+        update_cache: yes
+
+    - name: install python3-psycopg2-binary
+      ansible.builtin.apt:
+        name: python3-psycopg2-binary
+        state: present
+        update_cache: yes 
+      notify: Start postgresql
+
+
+  handlers:
+    - name: Start postgresql
+      ansible.builtin.systemd:
+        name: postgresql
+        state: started
+        enabled: yes
+
+
+
+- name: Configuring database
+  hosts: database
+  become: true
+  vars_files:
+    - secrets.yml
+  tasks:
+    - name: Create database
+      community.postgresql.postgresql_db:
+        name: "{{ db_name }}"
+        state: present
+
+    - name: Create database user
+      community.postgresql.postgresql_user:
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+        state: present
+
+    - name: Grant privileges to database user
+      community.postgresql.postgresql_privs:
+        db: "{{ db_name }}"
+        role: "{{ db_user }}"
+        priv: ALL
+        type: database
+
+
+
+
+- name: Installing and setting up django across the backend application
+  hosts: backend
+  become: true
+  vars_files:
+    - secrets.yml 
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: install python3-pip
+      ansible.builtin.apt:
+        name: python3-pip
+        state: present
+        update_cache: yes
+
+    - name: install python3-venv
+      ansible.builtin.apt:
+        name: python3-venv
+        state: present
+        update_cache: yes
+
+    - name: install django
+      ansible.builtin.pip:
+        name: django
+        state: present
+
+    - name: install gunicorn
+      ansible.builtin.pip:
+        name: gunicorn
+        state: present
+
+    - name: install psycopg2
+      ansible.builtin.pip:
+        name: psycopg2
+        state: present
+
+    - name: install requests
+      ansible.builtin.pip:
+        name: requests
+        state: present
+
+    - name: install django-cors-headers
+      ansible.builtin.pip:
+        name: django-cors-headers
+        state: present
+
+    - name: install djangorestframework
+      ansible.builtin.pip:
+        name: djangorestframework
+        state: present
+
+    - name: install djangorestframework_simplejwt
+      ansible.builtin.pip:
+        name: djangorestframework_simplejwt
+        state: present
+
+    - name: install django-filter
+      ansible.builtin.pip:
+        name: django-filter
+        state: present
+
+    - name: install django-storages
+      ansible.builtin.pip:
+        name: django-storages
+        state: present
+
+    - name: install boto3
+      ansible.builtin.pip:
+        name: boto3
+        state: present
+
+    - name: install django-storages-s3
+      ansible.builtin.pip:
+        name: django-storages-s3
+        state: present
+
+    - name: install django-storages-s3boto3
+      ansible.builtin.pip:
+        name: django-storages-s3boto3
+        state: present  
+
+    - name: Clone the Django backend repository
+      ansible.builtin.git:
+        repo: "{{ django_repo_url }}"  
+        dest: "/opt/django_backend"   
+        version: "main"             
+        update: yes
+        force: yes 
+    
+    - name: Create Django virtual environment
+      ansible.builtin.command: python3 -m venv /opt/django_backend/venv
+      args:
+        creates: "/opt/django_backend/venv/bin/activate" 
+
+    - name: Install dependencies in virtual environment
+      ansible.builtin.pip:
+        requirements: "/opt/django_backend/requirements.txt"
+        virtualenv: "/opt/django_backend/venv"  
+
+
